@@ -1,0 +1,21 @@
+body {
+    background-color: rgb(1, 0, 85);
+    color: white;
+}
+
+
+.bar {
+    margin-right: 1px;
+    background-color: aqua;
+    width: 3px;
+    display: inline-block;
+}
+
+.bar:hover {
+    background-color: white;
+}
+
+svg {
+    margin: 0 auto;
+    display: block;
+}
