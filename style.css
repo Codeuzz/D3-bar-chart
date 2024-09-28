@@ -3,19 +3,39 @@ body {
     color: white;
 }
 
+h1 {
+    text-align: center;
+    font-weight: 500;
+    font-size: 40px;
+    margin: 0;
+}
+
 
 .bar {
-    margin-right: 1px;
     background-color: aqua;
     width: 3px;
     display: inline-block;
 }
 
 .bar:hover {
-    background-color: white;
+    fill: rgb(1, 0, 85);
 }
 
 svg {
     margin: 0 auto;
     display: block;
+    /* background-color: white; */
 }
+
+
+#tooltip {
+    position: absolute;
+    visibility: hidden;
+    background: rgb(255, 255, 255);
+    padding: 5px;
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px black;
+    border-radius: 5px;
+    color: black; 
+    pointer-events: none; /* Prevent tooltip from interfering with mouse events */
+  }
