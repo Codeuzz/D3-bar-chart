@@ -14,7 +14,60 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
     throw new Error('Not ok')
   }
 })
-.then(data => barMan(data))
+.then(data => {
+  makeSvg(data)
+  barMan(data)
+  makeAxis(data)
+
+})
+
+const height = 500;
+const width = 899;
+const padding = 40;
+
+
+const makeSvg = (data) => {
+ const donnee = data.data.map(d => d)
+
+  const svg =  d3.select('#app')
+    .append('svg')
+    .attr('height', height)
+    .attr('width', width)
+    .style('border', '1px solid white')
+
+}
+
+//        NEED TO DO GETYEAR FUNCTION TO ADD IT TO BOTTOM SCALE DOMAIN AND REUSE IT IN GETQUARTER ??
+
+// const getYear = (dateString) => {
+//   const year = parseInt(dateString.split('-')[0], 10)
+//   return year
+// }
+
+const makeAxis = (data) => {
+  const donnee = data.data.map(d => d)
+  const svg = d3.select('svg')
+
+  
+
+  const scale = d3.scaleLinear()
+  .domain([1947, 2016])  
+  .range([padding, width - padding]);
+
+  const axisX = d3.axisBottom(scale);
+  svg.append('g')
+  .attr("transform", `translate(0, ${height - padding})`)
+  .call(axisX);
+
+  const scale2 = d3.scaleLinear()
+  .domain([0, d3.max(donnee.map(d => d[1]))])
+  .range([height - padding, padding])
+  // console.log(d3.max(donnee.map(d => d[1])))
+  const axisY = d3.axisLeft(scale2)
+  svg.append('g')
+      .attr("transform", `translate(${padding}, 0)`)
+      .call(axisY);
+}
 
 
 
@@ -38,18 +91,18 @@ const barMan = (data) => {
  .enter()
  .append('rect')
  .style('height', d => `${d[1] / 40}px`)
- .style('width', 4)
+ .style('width', 3)
  .attr('class', 'bar')
- .attr('x', (d, i) => i * 4.1 )
+ .attr('x', (d, i) => i * 3.1 + padding )
  .attr("y", d => height - d[1] / 40 - padding)
  .attr('fill', 'aqua')
  .on('mouseover', (event, d) => {
   tooltip.style('visibility', 'visible')
-         .html(`${getQuarter(d[0])} <br> $${d[1].toLocaleString()} Billion`)
-         .style('top', `${height - padding}px`)
-         .style('left', `${event.pageX + 15}px`);
+         .html(`${getQuarter(d[0])} <br> $${d[1].toLocaleString('us-US')} Billion`)
+         .style('top', `${height - padding - 50}px`)
+         .style('left', `${event.pageX + padding}px`);
   })
-.on('mouseout', () => {
+ .on('mouseout', () => {
   tooltip.style('visibility', 'hidden'); 
   });
  
@@ -63,27 +116,32 @@ const barMan = (data) => {
 }
 
 
-const height = 550;
-const width = 1100;
-const padding = 20;
 
-const svg =  d3.select('div')
-    .append('svg')
-    .attr('height', height)
-    .attr('width', width)
-    .style('border', '1px solid white')
 
-    const scale = d3.scaleLinear()
-    .domain([1947, 2015])  
-    .range([0, 1100]);
+// const svg =  d3.select('div')
+//     .append('svg')
+//     .attr('height', height)
+//     .attr('width', width)
+//     .style('border', '1px solid white')
 
-    const axis = d3.axisBottom(scale);
+//     const scale = d3.scaleLinear()
+//     .domain([1947, 2015])  
+//     .range([0, 1100]);
 
-    svg.append('g')
-    .attr("transform", `translate(0, ${height - padding})`)
-    .call(axis);
+//     console.log(scale())
+
+//     const axis = d3.axisBottom(scale);
+
+//     svg.append('g')
+//     .attr("transform", `translate(0, ${height - padding})`)
+//     .call(axis);
 
     
+
+
+
+
+
 
 // .append('rect')
 // .attr('x', 0)
