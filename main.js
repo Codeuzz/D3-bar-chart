@@ -2,7 +2,8 @@ import './style.css'
 import * as d3 from 'd3';
 
 document.querySelector('#app').innerHTML = `
-  <h1>United States GDP</h1>
+  <h1 id='title'>United States GDP</h1>
+  <div id="container"></div>
   <div id='tooltip'></div>
 `
 
@@ -25,16 +26,16 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
 })
 
 const height = 500;
-const width = 899;
+const width = 900;
 const padding = 40;
 
 
 const makeSvg = (data) => {
  const donnee = data.data.map(d => d)
 
-  const svg =  d3.select('#app')
+  const svg =  d3.select('#container')
     .append('svg')
-    .attr('height', height)
+    .attr('height', height + 40)
     .attr('width', width)
     // .style('border', '1px solid white')
     
@@ -60,6 +61,7 @@ const makeAxis = (data) => {
   const axisX = d3.axisBottom(scale);
   svg.append('g')
   .attr("transform", `translate(0, ${height - padding})`)
+  .attr('id', 'x-axis')
   .call(axisX);
 
   scale2 = d3.scaleLinear()
@@ -69,7 +71,9 @@ const makeAxis = (data) => {
   const axisY = d3.axisLeft(scale2)
   svg.append('g')
       .attr("transform", `translate(${padding}, 0)`)
+      .attr('id', 'y-axis')
       .call(axisY);
+
 
 }
 
@@ -94,15 +98,15 @@ const barMan = (data) => {
  .data(donnee)
  .enter()
  .append('rect')
- .style('height', d => `${d[1] / 40}px`)
  .style('width', 3)
+ .style('height', d => `${d[1] / (padding + 3)}px`)
  .attr('class', 'bar')
  .attr('x', (d, i) => {
     const {year, offset} = getQuarter(d[0])
     
     return scale(year) + (offset * (scale(1948) - scale(1947)))
  })
- .attr("y", d => height - d[1] / 40 - padding)
+ .attr("y", d => scale2(d[1]))
  .attr('fill', 'aqua')
  .on('mouseover', (event, d) => {
   const { quarter, year } = getQuarter(d[0]);
@@ -116,8 +120,24 @@ const barMan = (data) => {
   });
  
 
- 
+  d3.select('svg')
+  .append('text')
+  .text('More Information: http://www.bea.gov/national/pdf/nipaguid.pdf')
+  .attr('x', 470 )
+  .attr('y', height + 30)
+  .attr('fill', 'white')
+
+  d3.select('svg')
+  .append('text')
+  .text('Gross Domestic Product')
+  .attr('x', -260)
+  .attr('y', 70)
+  .attr('fill', 'white')
+  .attr('transform', 'translate(10, 20) rotate(-90)')
+  .style('font-size', '20px')
+  
 }
+
 
 
 
