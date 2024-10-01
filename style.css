@@ -34,14 +34,14 @@ svg {
 #tooltip {
     width: 115px;
     position: absolute;
-    visibility: hidden;
-    background: rgba(255, 255, 255, 0.808);
+    background: rgb(255, 255, 255);
     padding: 5px;
     border: 1px solid #ccc;
     box-shadow: 2px 2px 0px black;
     border-radius: 5px;
     color: black; 
-    pointer-events: none; /* Prevent tooltip from interfering with mouse events */
+    pointer-events: none;
+    opacity: 0;
   }
 
   #container {

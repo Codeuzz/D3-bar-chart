@@ -37,7 +37,6 @@ const makeSvg = (data) => {
     .append('svg')
     .attr('height', height + 40)
     .attr('width', width)
-    // .style('border', '1px solid white')
     
 }
 
@@ -47,16 +46,19 @@ const getYear = (dateString) => {
   return year
 }
 
+
+
 let scale, scale2;
 const makeAxis = (data) => {
   const donnee = data.data.map(d => d)
   const svg = d3.select('svg')
 
-  
+ let joe = donnee.map(d => getYear(d[0]) + 0.75)
+  console.log(joe)
 
-   scale = d3.scaleLinear()
-  .domain([1947, 2016])  
-  .range([padding, width]);
+   scale = d3.scaleTime()
+   .domain([new Date(donnee[0][0]), new Date(donnee[donnee.length - 1][0])])  
+   .range([padding, width - padding]);
 
   const axisX = d3.axisBottom(scale);
   svg.append('g')
@@ -82,14 +84,16 @@ const makeAxis = (data) => {
 const barMan = (data) => {
  const donnee = data.data.map(d => d)
  const svg = d3.select('svg')
+ const barWidth = (width - 2 * padding) / donnee.length;
+
 
  const getQuarter = (dateString) => {
   const month = parseInt(dateString.split('-')[1], 10); 
   const year = getYear(dateString)
-  if (month >= 1 && month <= 3) return { year: year, quarter: 'Q1', offset: 0};
-  if (month >= 4 && month <= 6) return { year: year, quarter: 'Q2', offset: 0.25 };
-  if (month >= 7 && month <= 9) return { year: year, quarter: 'Q3', offset: 0.5 };
-  return { year: year, quarter: 'Q4', offset: 0.75 }
+  if (month >= 1 && month <= 3) return { year: year, quarter: 'Q1'};
+  if (month >= 4 && month <= 6) return { year: year, quarter: 'Q2'};
+  if (month >= 7 && month <= 9) return { year: year, quarter: 'Q3'};
+  return { year: year, quarter: 'Q4'}
 };
 
  const tooltip = d3.select('#tooltip')
@@ -98,25 +102,26 @@ const barMan = (data) => {
  .data(donnee)
  .enter()
  .append('rect')
- .style('width', 3)
+ .style('width', barWidth)
  .style('height', d => `${d[1] / (padding + 3)}px`)
  .attr('class', 'bar')
- .attr('x', (d, i) => {
-    const {year, offset} = getQuarter(d[0])
-    
-    return scale(year) + (offset * (scale(1948) - scale(1947)))
- })
+ .attr('data-date', d => d[0])
+ .attr('data-gdp', d => d[1])
+ .attr('x', d => scale(new Date(d[0])))
  .attr("y", d => scale2(d[1]))
  .attr('fill', 'aqua')
  .on('mouseover', (event, d) => {
   const { quarter, year } = getQuarter(d[0]);
-  tooltip.style('visibility', 'visible')
+  tooltip.style('opacity', '1')
+         .attr('data-date', d[0])
          .html(`${year} ${quarter} <br> $${d[1].toLocaleString('us-US')} Billion`)
          .style('top', `${height - padding - 50}px`)
-         .style('left', `${event.pageX + padding}px`);
+         .style('left', `${event.pageX + padding}px`)
+
   })
  .on('mouseout', () => {
-  tooltip.style('visibility', 'hidden'); 
+  tooltip.style('opacity', '0')
+   
   });
  
 
